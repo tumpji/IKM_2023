@@ -13,7 +13,12 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta}
+\usepackage{pgfplots}
 \usepackage{makecell}
+\usepackage{xcolor}
+
+\usepackage{caption}
+\usepackage{subcaption}
 % Math
 % https://www.overleaf.com/learn/latex/Mathematical_expressions
 % https://en.wikibooks.org/wiki/LaTeX/Mathematics
@@ -273,6 +278,111 @@ The Naive Bayes is not restricted to continuous feature spaces; it is a popular 
         \path [->] (NB)  edge node[right] {\makecell[c]{Exclusive use of\\Gaussian distribution}} (GNB);
     \end{tikzpicture}
     \caption{ The relationships between all four types of probabilistic classifiers mentioned up until now. }
+\end{figure}
+
+\newpage
+\section{Iterative Classifiers}
+Commonly, the distribution of parameters is unknown. In this case, it may be safer not to rely on the central limit theorem and instead focus on the important part of classification -- the decision line.
+
+
+\subsection{Logistic Regression}
+The naive approach to the search for a reasonable decision border is to try every possible one on our data. 
+As you can imagine, another approach must be found for continuous spaces for which this method is not tractable.
+
+We want a function that produces a class prediction given point in space. 
+An example of such a function is the Step function (see figure \ref{fig:step}), which really restricts optimization efforts because of the flat, non-informative regions and sharp slope. 
+A smooth optimization cannot be used because it needs informative derivatives. 
+The sigmoid function (see fig. \ref{fig:sigmoid} and equation \ref{eq:sigmoid}), on the other hand, makes such optimization possible.
+The slope of the sigmoid function can be shaped to create something that acts as a probability of class instead of the label itself. 
+I need to point out that this value is not a probability. 
+The value converges to the probability only if the assumptions of the classifier are not violated and the smooth optimization succeeds.
+
+\begin{equation}
+    f(x) = \frac{1}{1 + e^{-x}}
+    \label{eq:sigmoid}
+\end{equation}
+
+The Logistic Regression is linear classifier. Therefore, the input of the simgoid is linearly transformed and translated value. The transformations are optimized. In one-dimensional case, the final simgoid function may look like 
+$$
+    f(x) = \frac{1}{1 + \exp{\left(-(b_0 + b_1 x_1)\right)}},
+$$
+where $b_0$ and $b_1$ are trainable parameters of the classifier and $x_1$ is the 1D feature.
+In practice, it is implemented as a dot product, an example of 2d decision bounary is depicted in figure \ref{fig:logreg2d}.
+The nature of the selected optimization algorithm used on the non-convex function does not guarantee finding the best decision boundary every time. It may be helpful to fit the model multiple times with different random seeds (initial placement of the sigmoid) to improve the performance.
+
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \begin{tikzpicture}[declare function={sigma(\x)=(sign(\x)+1)/2;}]
+        \begin{axis}%
+        [
+            grid=major,     
+            xmin=-6,
+            xmax=6,
+            axis x line=bottom,
+            ytick={0,.5,1},
+            ymin=-0.05,
+            ymax=1.05,
+            axis y line=middle,
+            samples=100,
+            domain=-6:6,
+            legend style={at={(1,0.9)}}     
+        ]
+            \addplot[blue,mark=none,line width=1pt]   (x,{sigma(x)});
+            \legend{$\text{step}(x)$,$\sigma'(x)$}
+        \end{axis}
+        \end{tikzpicture}
+        \caption{The Step function}
+        \label{fig:step}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \begin{tikzpicture}[declare function={sigma(\x)=1/(1+exp(-\x));
+        sigmap(\x)=sigma(\x)*(1-sigma(\x));}]
+        \begin{axis}%
+        [
+            grid=major,     
+            xmin=-6,
+            xmax=6,
+            axis x line=bottom,
+            ytick={0,.5,1},
+            ymin=-0.05,
+            ymax=1.05,
+            axis y line=middle,
+            samples=100,
+            domain=-6:6,
+            legend style={at={(1,0.9)}}     
+        ]
+            \addplot[blue,mark=none,line width=1pt]   (x,{sigma(x)});
+            \addplot[red,dotted,mark=none,line width=1pt]   (x,{sigmap(x)});
+            \legend{$\sigma(x)$,$\sigma'(x)$}
+        \end{axis}
+        \end{tikzpicture}
+        \caption{The Sigmoid function}
+        \label{fig:sigmoid}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \begin{tikzpicture}
+             \begin{axis}[
+                xmin=-1,
+                xmax=1,
+                ymin=-1,
+                ymax=1,
+                zmin=0,
+                zmax=1,
+                xlabel={$x_1$},
+                ylabel={$x_2$},
+                zlabel={$f(x)$},
+                xtick={-1,-1/2,0,1/2,1},
+                ytick={-1,-1/2,0,1/2,1},
+                ]
+                 \addplot3[surf,domain=-1:1,samples=40]{1/(1+exp(8*x + 4*y))};
+             \end{axis}
+          \end{tikzpicture}
+      \caption{An example of the Sigmoid function on 2d dataset}
+      \label{fig:logreg2d}
+    \end{subfigure}
+    \caption{Forms of the decision bounary functions.}
 \end{figure}
 
 
