@@ -16,6 +16,11 @@
 *.toc
 *.nav
 *.snm
+*.bcf
+*.run.xml
+
+# vim
+*.swp
 
 # Jupyter
 .ipynb_checkpoints
