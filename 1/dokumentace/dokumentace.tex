@@ -80,9 +80,9 @@
 
 \subsection{Bayesian Approach to Classification}
 Some classifiers rely on probability theory. 
-Essentially they want to predict a probability of class ($y$) given features ($x$) -- $p(y|x)$. 
-But as you can imagine, there is hardly any application where we could sample every possible $x$ soo many times to have a reasonable statistic about $y$. 
-Moreover, if $x$ is continuous, the problem become intractable.
+Essentially they try to predict a probability of class ($y$) given features ($x$) -- $p(y|x)$. 
+But as you can imagine, there is hardly any application where we could sample every possible $x$ so many times to have a reasonable statistic about $y$. 
+Moreover, if $x$ is continuous, the problem becomes intractable.
 Bayes rule is a straightforward application of one of the axioms of conditional probability. 
 It states that the unreachable a posteriori probability ($p(y|x)$) can be expressed as a fraction:
 
@@ -95,7 +95,7 @@ It states that the unreachable a posteriori probability ($p(y|x)$) can be expres
         \underbrace{p(x)}_{\text{marginal likelihood}}
     }
 \end{align}
-The divisor -- marginal likelihood can be omitted in the comparison between two (or more) a posteriori probabilities because it acts as a multiplicative constant.
+The divisor -- marginal likelihood can be omitted in the comparison of two (or more) a posteriori probabilities because it acts as a multiplicative constant.
 For this reason, a bayesian approach to binary classification problems can be simplified into
 \begin{equation}
     \label{eq:cls}
@@ -103,7 +103,7 @@ For this reason, a bayesian approach to binary classification problems can be si
 \end{equation}
 
 One question remains: How to model the likelihood ($p(x|y)$). 
-We could try complex statistical models like a Gaussian mixture model (see first lecture notes), but it is usually computationally
+We could try complex statistical models like a Gaussian mixture model, but it is usually computationally
 expensive and may create additional problems like overtraining. 
 A good rule of thumb is to use simpler models first and then improve based on results.
 The central limit theorem states that if a random variable (in our case $\sim p(x|y)$) 
@@ -233,13 +233,13 @@ than assuming something about data that is not true and hoping it will not make 
 
 
 \subsection{Gaussian Naive Bayes}
-Let's assume that the covariance is diagonal -- i.e., one feature does not affect another. 
-The classifier is still quadratic; equation \ref{eq:reduce_linear} can be split by dimension. 
+Let's assume that the covariance is diagonal, i.e., features do not affect each other. 
+The classifier is still quadratic and equation \ref{eq:reduce_linear} can be split by dimension. 
 In other words, the classifier creates likelihoods for each dimension separately, 
 assuming conditional independence given class. 
-Then it uses the product rule -- a product of probabilities of independent events is a probability of the joint event (eq. \ref{eq:gaussian_bayes}).
-If all dataset features are independent, the QDA produce the same result as Gaussian Naive Bayes.
-Unfortunately, this is hardly true; for example, let's consider dataset classifying people, 
+Then the Gaussian Naive Bayes uses the product rule -- a product of probabilities of independent events is a probability of the joint event (eq. \ref{eq:gaussian_bayes}).
+If all dataset features are independent, the QDA produces the same result as Gaussian Naive Bayes.
+Unfortunately, this rarely happens. For example, let's consider dataset classifying people, 
 then weight and height are expected to be dependent features because taller individuals are generally heavier. 
 On the other hand, violating the assumption does not mean that the classifier won't work entirely, 
 and many techniques make the data at least linearly independent, e.g. Singular Value Decomposition and its generalized variants.
@@ -252,10 +252,10 @@ and many techniques make the data at least linearly independent, e.g. Singular V
 \end{equation}
 
 \subsection{General Naive Bayes}
-The Naive Bayes is a more general classifier to the Gaussian Naive Bayes.
+The Naive Bayes is a more general classifier then the Gaussian Naive Bayes.
 The difference is in the statistical modelling -- the Naive Bayes allows any distribution to be the likelihood, whereas Gaussian Naive Bayes allows only the normal distribution.
 Other aspects are the same -- the Naive Bayes assumes conditional independence for all features given class. 
-Hence there is no consideration for other features when fitting the distributions of the classifier.
+Hence, there is no consideration for other features when fitting the distributions of the classifier.
 The Naive Bayes is not restricted to continuous feature spaces; it is a popular classifier whenever binary or categorical variables hold the most information.
 
 
@@ -273,7 +273,7 @@ The Naive Bayes is not restricted to continuous feature spaces; it is a popular 
         \node[shape=circle,draw=black] (LDA) at (0,-5) {LDA};
         \node[shape=circle,draw=black] (GNB) at (5,-5) {\makecell[c]{Gaussian\\Naive\\Bayes}};
 
-        \path [->] (QDA) edge node[left] {\makecell[c]{All classes have same\\covariance matrix.}} (LDA);
+        \path [->] (QDA) edge node[left] {\makecell[c]{All classes share\\covariance matrix.}} (LDA);
         \path [->] (QDA) edge node[left,yshift=-0.2cm] {\makecell[c]{Independent\\features}} (GNB);
         \path [->] (NB)  edge node[right] {\makecell[c]{Exclusive use of\\Gaussian distribution}} (GNB);
     \end{tikzpicture}
@@ -287,27 +287,31 @@ Commonly, the distribution of parameters is unknown. In this case, it may be saf
 
 \subsection{Logistic Regression}
 The naive approach to the search for a reasonable decision border is to try every possible one on our data. 
-As you can imagine, another approach must be found for continuous spaces for which this method is not tractable.
+As you can imagine, another approach must be found for continuous spaces for which this method is intractable.
 
 We want a function that produces a class prediction given point in space. 
-An example of such a function is the Step function (see figure \ref{fig:step}), which really restricts optimization efforts because of the flat, non-informative regions and sharp slope. 
-A smooth optimization cannot be used because it needs informative derivatives. 
-The sigmoid function (see fig. \ref{fig:sigmoid} and equation \ref{eq:sigmoid}), on the other hand, makes such optimization possible.
+An example of such a function is the step function (see figure \ref{fig:step}), which restricts optimization efforts because of the flat, non-informative regions and sharp slope. 
+A gradiet-descent optimization cannot be used because it needs informative derivatives. 
+On the other hand, the sigmoid function (see fig. \ref{fig:sigmoid} and equation \ref{eq:sigmoid}) makes such an optimization possible.
 The slope of the sigmoid function can be shaped to create something that acts as a probability of class instead of the label itself. 
-I need to point out that this value is not a probability. 
-The value converges to the probability only if the assumptions of the classifier are not violated and the smooth optimization succeeds.
+It needs to be pointed out that this value is not a probability. 
+The value converges to the probability only if the assumptions of a classifier are not violated and the gradient descent succeeds.
 
 \begin{equation}
     f(x) = \frac{1}{1 + e^{-x}}
     \label{eq:sigmoid}
 \end{equation}
 
-The Logistic Regression is linear classifier. Therefore, the input of the simgoid is linearly transformed and translated value. The transformations are optimized. In one-dimensional case, the final simgoid function may look like 
+
+Logistic Regression is a linear classifier. 
+Therefore samples from feature space must be linearly transformed into a scalar to use the sigmoid function. 
+The most intuitive transformation is a dot product which can be geometrically interpreted as an orthogonal projection of a sample from feature space into a normal vector of the decision hyperplane.
+In one-dimensional case, the final sigmoid function may look like 
 $$
     f(x) = \frac{1}{1 + \exp{\left(-(b_0 + b_1 x_1)\right)}},
 $$
 where $b_0$ and $b_1$ are trainable parameters of the classifier and $x_1$ is the 1D feature.
-In practice, it is implemented as a dot product, an example of 2d decision bounary is depicted in figure \ref{fig:logreg2d}.
+In practice, it is implemented as a dot product, an example of 2d decision boundary is depicted in figure \ref{fig:logreg2d}.
 The nature of the selected optimization algorithm used on the non-convex function does not guarantee finding the best decision boundary every time. It may be helpful to fit the model multiple times with different random seeds (initial placement of the sigmoid) to improve the performance.
 
 
@@ -382,7 +386,7 @@ The nature of the selected optimization algorithm used on the non-convex functio
       \caption{An example of the Sigmoid function on 2d dataset}
       \label{fig:logreg2d}
     \end{subfigure}
-    \caption{Forms of the decision bounary functions.}
+    \caption{Forms of the decision boundary functions.}
 \end{figure}
 
 
