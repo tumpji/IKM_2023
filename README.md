@@ -27,3 +27,13 @@ Projekt:
 
 ! Za 0 bodů budou ohodnoceny projekty které:
 - Budou testovat na trénovacích datech
+
+
+
+
+## Cvičení I:
+- QDA, LDA, Naive Bayes, Gaussian Naive Bayes, Logistic Regression
+- Classifier, Linear Classifier, Quadratic Classifier, QQ-plot, Histogram, Sigmoid function
+
+## Cvičení II:
+- 
