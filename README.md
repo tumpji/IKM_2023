@@ -36,4 +36,10 @@ Projekt:
 - Classifier, Linear Classifier, Quadratic Classifier, QQ-plot, Histogram, Sigmoid function
 
 ## Cvičení II:
-- 
+- Imbalanced Dataset, ROC, AUC, PR
+- Cost-Sensitive Classification, Theoretical Thresholding, Empirical Thresholding, Oversampling, Undersampling
+- Class Weight, a priori probability
+- Confusion Matrix 
+
+## Cvičení III:
+- PCA, Kernel PCA, Feature Transformation, Kernel Trick, Hard-SVM, Soft-SVM, Grid Search
